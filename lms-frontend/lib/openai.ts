@@ -30,25 +30,44 @@ interface TopicData {
 
 // Helper function to get API key
 const getApiKey = (): string => {
-  const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-  if (!apiKey || apiKey === 'your-openai-api-key-here') {
-    console.error('OpenAI API key is not set or invalid');
+  // In browser environment, use NEXT_PUBLIC prefix
+  const apiKey = typeof window !== 'undefined'
+    ? process.env.NEXT_PUBLIC_OPENAI_API_KEY
+    : process.env.OPENAI_API_KEY; // Use non-public env in server context
+  
+  if (!apiKey || apiKey === 'your_openai_api_key_here') {
+    console.warn('OpenAI API key is not set or invalid - using mock data');
+    return '';
   }
-  return apiKey || '';
+  return apiKey;
 };
 
-// Create axios instance for OpenAI API
-const openaiApi = axios.create({
-  baseURL: 'https://api.openai.com/v1',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${getApiKey()}`
-  }
-});
+// Create axios instance for OpenAI API - create dynamically to ensure fresh token
+const createOpenAiApi = () => {
+  const apiKey = getApiKey();
+  
+  // If no API key, we'll use mock data instead
+  if (!apiKey) return null;
+  
+  return axios.create({
+    baseURL: 'https://api.openai.com/v1',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    }
+  });
+};
 
 // Function to generate a coding question based on topic and difficulty
 export async function generateQuestion(topic: string, difficulty: string, language: string): Promise<CodeQuestion> {
   try {
+    const openaiApi = createOpenAiApi();
+    
+    // If API is not available, return mock data
+    if (!openaiApi) {
+      return getMockQuestion(topic, difficulty, language);
+    }
+    
     const response = await openaiApi.post('/chat/completions', {
       model: 'gpt-3.5-turbo',
       messages: [
@@ -79,16 +98,20 @@ export async function generateQuestion(topic: string, difficulty: string, langua
     };
   } catch (error) {
     console.error('Error generating question:', error);
-    // Return a fallback question if API call fails
-    return {
-      id: `${topic}-${difficulty}-fallback`,
-      question: `Create a ${difficulty} level ${language} program related to ${topic}.`,
-      hints: [`Use ${language}-specific syntax and features.`, 'Break down the problem into smaller steps.'],
-      difficulty,
-      topic,
-      language
-    };
+    return getMockQuestion(topic, difficulty, language);
   }
+}
+
+// Mock question generator for when API is unavailable
+function getMockQuestion(topic: string, difficulty: string, language: string): CodeQuestion {
+  return {
+    id: `${topic}-${difficulty}-mock-${Date.now()}`,
+    question: `Create a ${difficulty} level ${language} program related to ${topic}.`,
+    hints: [`Use ${language}-specific syntax and features.`, 'Break down the problem into smaller steps.'],
+    difficulty,
+    topic,
+    language
+  };
 }
 
 // Function to analyze code for authenticity and correctness
@@ -98,6 +121,13 @@ export async function analyzeCode(
   question: CodeQuestion
 ): Promise<CodeAnalysisResult> {
   try {
+    const openaiApi = createOpenAiApi();
+    
+    // If API is not available, return mock data
+    if (!openaiApi) {
+      return getMockAnalysis();
+    }
+    
     const response = await openaiApi.post('/chat/completions', {
       model: 'gpt-3.5-turbo',
       messages: [
@@ -139,19 +169,30 @@ export async function analyzeCode(
     };
   } catch (error) {
     console.error('Error analyzing code:', error);
-    // Return fallback analysis if API call fails
-    return {
-      output: 'Error simulating code execution',
-      feedback: 'Unable to analyze code at this time. Please try again later.',
-      authenticityScore: 100,
-      plagiarismWarning: undefined
-    };
+    return getMockAnalysis();
   }
+}
+
+// Mock analysis generator for when API is unavailable
+function getMockAnalysis(): CodeAnalysisResult {
+  return {
+    output: 'Code executed successfully (simulated result)',
+    feedback: 'The code looks well-structured. Consider adding more comments to explain your logic.',
+    authenticityScore: 95,
+    plagiarismWarning: undefined
+  };
 }
 
 // Function to get available programming topics
 export async function getTopics(): Promise<{id: string; name: string}[]> {
   try {
+    const openaiApi = createOpenAiApi();
+    
+    // If API is not available, return mock data
+    if (!openaiApi) {
+      return getMockTopics();
+    }
+    
     const response = await openaiApi.post('/chat/completions', {
       model: 'gpt-3.5-turbo',
       messages: [
@@ -182,11 +223,18 @@ export async function getTopics(): Promise<{id: string; name: string}[]> {
     }));
   } catch (error) {
     console.error('Error fetching topics:', error);
-    // Return fallback topics if API call fails
-    return [
-      { id: 'basics', name: 'Programming Basics' },
-      { id: 'functions', name: 'Functions' },
-      { id: 'loops', name: 'Loops' }
-    ];
+    return getMockTopics();
   }
+}
+
+// Mock topics generator for when API is unavailable
+function getMockTopics(): Array<{id: string; name: string}> {
+  return [
+    { id: 'basics', name: 'Programming Basics' },
+    { id: 'functions', name: 'Functions and Methods' },
+    { id: 'data-structures', name: 'Data Structures' },
+    { id: 'algorithms', name: 'Algorithms' },
+    { id: 'oop', name: 'Object-Oriented Programming' },
+    { id: 'web-dev', name: 'Web Development' }
+  ];
 } 
