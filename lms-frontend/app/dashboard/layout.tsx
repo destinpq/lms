@@ -9,8 +9,6 @@ import {
   ChartBarIcon, 
   UserGroupIcon, 
   CogIcon, 
-  BellIcon, 
-  InboxIcon,
   ArrowLeftOnRectangleIcon
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../../lib/AuthContext";
@@ -64,23 +62,23 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="dashboard-layout">
       {/* Sidebar */}
-      <div className="hidden md:flex md:w-64 md:flex-col">
-        <div className="flex flex-col flex-grow pt-5 bg-white border-r border-gray-200">
-          <div className="flex items-center flex-shrink-0 px-4">
-            <h1 className="text-xl font-bold text-blue-600">LMS Platform</h1>
+      <div className="dashboard-sidebar visible">
+        <div className="flex flex-col flex-grow pt-5 bg-white border-r border-gray-200 shadow-sm h-full">
+          <div className="flex items-center flex-shrink-0 px-4 mb-5">
+            <Link href="/dashboard" className="text-xl font-bold text-blue-600">LMS Platform</Link>
           </div>
-          <div className="flex flex-col flex-grow px-4 mt-5">
-            <nav className="flex-1 space-y-1">
+          <div className="flex flex-col flex-grow px-4">
+            <nav className="flex-1 space-y-2">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="flex items-center px-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900 group"
+                  className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 group"
                 >
                   <item.icon
-                    className="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                    className="w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500"
                     aria-hidden="true"
                   />
                   {item.name}
@@ -89,7 +87,7 @@ export default function DashboardLayout({
               
               <button
                 onClick={handleSignOut}
-                className="flex items-center w-full px-2 py-2 mt-8 text-sm font-medium text-red-600 rounded-md hover:bg-red-50 hover:text-red-700 group"
+                className="flex items-center w-full px-3 py-2 mt-6 text-sm font-medium text-red-600 rounded-md hover:bg-red-50 hover:text-red-700 group"
               >
                 <ArrowLeftOnRectangleIcon
                   className="w-5 h-5 mr-3 text-red-400 group-hover:text-red-500"
@@ -103,34 +101,46 @@ export default function DashboardLayout({
       </div>
 
       {/* Main content */}
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="dashboard-content">
         {/* Top navigation */}
-        <header className="w-full bg-white shadow">
-          <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center md:hidden">
-              <h1 className="text-lg font-bold text-blue-600">LMS Platform</h1>
+        <header className="bg-white border-b border-gray-200 shadow-sm">
+          <div className="container mx-auto px-4 flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Link href="/dashboard" className="text-lg font-bold text-blue-600">LMS Platform</Link>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="p-1 text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                <span className="sr-only">View notifications</span>
-                <BellIcon className="w-6 h-6" aria-hidden="true" />
-              </button>
-              <button className="p-1 text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                <span className="sr-only">View messages</span>
-                <InboxIcon className="w-6 h-6" aria-hidden="true" />
-              </button>
+              <div className="notification-button-container">
+                <span className="notification-label">View notifications</span>
+                <button className="lms-notification-btn">
+                  <span className="sr-only">View notifications</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  </svg>
+                </button>
+              </div>
+              <div className="notification-button-container">
+                <span className="notification-label">View messages</span>
+                <button className="lms-notification-btn">
+                  <span className="sr-only">View messages</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </button>
+              </div>
               <div className="relative">
                 <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
-                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+                    <div className="user-avatar">
                       {user?.firstName ? user.firstName[0] : user?.email?.[0] || 'U'}
                     </div>
                   </div>
-                  <div className="hidden md:block">
-                    <div className="text-sm font-medium text-gray-900">
+                  <div className="user-info">
+                    <div className="user-name">
                       {user ? `${user.firstName} ${user.lastName}` : 'User'}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="user-email">
                       {user?.email || ''}
                     </div>
                   </div>

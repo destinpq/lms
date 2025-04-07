@@ -122,39 +122,45 @@ export default function Dashboard() {
   const selectedTopic = topics.find(topic => topic.id === selectedTopicId)?.name || '';
 
   return (
-    <div className="flex flex-col space-y-4">
-      <h1 className="text-2xl font-bold">Code Learning Platform</h1>
-      <p className="text-gray-600">Welcome {user?.firstName || 'Student'}! Practice your coding skills below.</p>
+    <div className="code-learning-container">
+      <div className="code-header">
+        <h1 className="code-header-title">Code Learning Platform</h1>
+      </div>
+      <p className="challenge-description mb-4">Welcome {user?.firstName || 'Student'}! Practice your coding skills below.</p>
       
-      <div className="flex flex-col md:flex-row gap-4 h-[calc(100vh-250px)]">
-        <CodeEditor
-          languageId={selectedLanguageId}
-          code={code}
-          topicId={selectedTopicId}
-          difficultyId={selectedDifficultyId}
-          currentQuestion={currentQuestion}
-          showHints={showHints}
-          isLoading={isLoading}
-          onLanguageChange={handleLanguageChange}
-          onTopicChange={(e) => setSelectedTopicId(e.target.value)}
-          onDifficultyChange={(e) => setSelectedDifficultyId(e.target.value)}
-          onCodeChange={(e) => setCode(e.target.value)}
-          onSubmit={handleSubmit}
-          onNewQuestion={fetchNewQuestion}
-          onToggleHints={() => setShowHints(!showHints)}
-          topics={topics}
-          difficulties={DIFFICULTY_LEVELS}
-        />
+      <div className="code-editor-container">
+        <div>
+          <CodeEditor
+            languageId={selectedLanguageId}
+            code={code}
+            topicId={selectedTopicId}
+            difficultyId={selectedDifficultyId}
+            currentQuestion={currentQuestion}
+            showHints={showHints}
+            isLoading={isLoading}
+            onLanguageChange={handleLanguageChange}
+            onTopicChange={(e) => setSelectedTopicId(e.target.value)}
+            onDifficultyChange={(e) => setSelectedDifficultyId(e.target.value)}
+            onCodeChange={(e) => setCode(e.target.value)}
+            onSubmit={handleSubmit}
+            onNewQuestion={fetchNewQuestion}
+            onToggleHints={() => setShowHints(!showHints)}
+            topics={topics}
+            difficulties={DIFFICULTY_LEVELS}
+          />
+        </div>
         
-        <CodeAnalysis
-          output={output}
-          feedback={feedback}
-          authenticityScore={authenticityScore}
-          plagiarismWarning={plagiarismWarning}
-          isLoading={isLoading}
-          selectedLanguage={selectedLanguage}
-          selectedTopic={selectedTopic}
-        />
+        <div>
+          <CodeAnalysis
+            output={output}
+            feedback={feedback}
+            authenticityScore={authenticityScore}
+            plagiarismWarning={plagiarismWarning}
+            isLoading={isLoading}
+            selectedLanguage={selectedLanguage}
+            selectedTopic={selectedTopic}
+          />
+        </div>
       </div>
     </div>
   );

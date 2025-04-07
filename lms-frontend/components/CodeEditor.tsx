@@ -57,13 +57,13 @@ export default function CodeEditor({
     currentQuestion.language !== languageId;
 
   return (
-    <div className="w-full md:w-1/2 flex flex-col space-y-4 bg-white p-4 rounded-lg shadow">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-        <div>
-          <label htmlFor="language" className="block text-sm font-medium text-gray-700">Language</label>
+    <div>
+      <div className="code-controls">
+        <div className="code-select-group">
+          <label htmlFor="language" className="code-select-label">Language</label>
           <select
             id="language"
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+            className="code-select"
             value={languageId}
             onChange={onLanguageChange}
           >
@@ -73,11 +73,11 @@ export default function CodeEditor({
           </select>
         </div>
         
-        <div>
-          <label htmlFor="topic" className="block text-sm font-medium text-gray-700">Topic</label>
+        <div className="code-select-group">
+          <label htmlFor="topic" className="code-select-label">Topic</label>
           <select
             id="topic"
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+            className="code-select"
             value={topicId}
             onChange={onTopicChange}
           >
@@ -87,11 +87,11 @@ export default function CodeEditor({
           </select>
         </div>
         
-        <div>
-          <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700">Difficulty</label>
+        <div className="code-select-group">
+          <label htmlFor="difficulty" className="code-select-label">Difficulty</label>
           <select
             id="difficulty"
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+            className="code-select"
             value={difficultyId}
             onChange={onDifficultyChange}
           >
@@ -102,19 +102,42 @@ export default function CodeEditor({
         </div>
       </div>
       
+      <div className="flex items-center mb-4">
+        <div className="notification-button-container mr-2">
+          <span className="notification-label">View notifications</span>
+          <button className="lms-notification-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <div className="notification-button-container">
+          <span className="notification-label">View messages</span>
+          <button className="lms-notification-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
       {hasLanguageMismatch && (
-        <div className="bg-yellow-50 p-3 rounded-md mb-2 border border-yellow-200">
+        <div className="challenge-card" style={{backgroundColor: "#fff8e6", borderLeftColor: "#eab308"}}>
           <div className="flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-600 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
             </svg>
-            <h3 className="font-medium text-yellow-800">Language Mismatch!</h3>
+            <h3 className="challenge-title" style={{color: "#854d0e", marginBottom: "0"}}>Language Mismatch!</h3>
           </div>
-          <p className="text-sm text-yellow-700 mt-1">
+          <p className="challenge-description" style={{color: "#854d0e", marginBottom: "0"}}>
             The current question is for {currentQuestion?.language} but you have selected {languageId}. 
             <button 
               onClick={onNewQuestion}
-              className="ml-2 font-medium underline hover:text-yellow-900 focus:outline-none"
+              className="hints-button ml-2"
+              style={{color: "#854d0e"}}
             >
               Get a new question
             </button>
@@ -123,28 +146,28 @@ export default function CodeEditor({
       )}
       
       {currentQuestion && (
-        <div className="bg-blue-50 p-4 rounded-md mb-2">
-          <h3 className="font-medium text-blue-800 mb-2">Challenge:</h3>
-          <p className="text-blue-700">{currentQuestion.question}</p>
+        <div className="challenge-card">
+          <h3 className="challenge-title">Challenge:</h3>
+          <p className="challenge-description">{currentQuestion.question}</p>
           
           {(currentQuestion.sampleInput || currentQuestion.sampleOutput) && (
             <div className="mt-2 text-sm">
-              {currentQuestion.sampleInput && <p className="text-blue-600">{currentQuestion.sampleInput}</p>}
-              {currentQuestion.sampleOutput && <p className="text-blue-600">{currentQuestion.sampleOutput}</p>}
+              {currentQuestion.sampleInput && <p className="challenge-description">{currentQuestion.sampleInput}</p>}
+              {currentQuestion.sampleOutput && <p className="challenge-description">{currentQuestion.sampleOutput}</p>}
             </div>
           )}
           
           {currentQuestion.hints.length > 0 && (
             <div className="mt-2">
               <button 
-                className="text-sm text-blue-600 hover:text-blue-800 underline focus:outline-none"
+                className="hints-button"
                 onClick={onToggleHints}
               >
                 {showHints ? 'Hide Hints' : 'Show Hints'}
               </button>
               
               {showHints && (
-                <ul className="mt-1 list-disc list-inside text-sm text-blue-600">
+                <ul className="hints-list">
                   {currentQuestion.hints.map((hint, index) => (
                     <li key={index}>{hint}</li>
                   ))}
@@ -153,9 +176,10 @@ export default function CodeEditor({
             </div>
           )}
           
-          <div className="mt-2 text-right">
+          <div className="text-right">
             <button 
-              className="text-sm bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded"
+              className="submit-button"
+              style={{width: "auto", padding: "0.5rem 1rem", marginTop: "0.5rem"}}
               onClick={onNewQuestion}
             >
               New Question
@@ -166,7 +190,7 @@ export default function CodeEditor({
       
       <div className="flex-grow relative">
         <textarea
-          className="w-full h-full p-4 font-mono text-sm bg-gray-800 text-white rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="code-textarea"
           value={code}
           onChange={onCodeChange}
           spellCheck="false"
@@ -174,7 +198,7 @@ export default function CodeEditor({
       </div>
       
       <button
-        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        className="submit-button"
         onClick={onSubmit}
         disabled={isLoading}
       >

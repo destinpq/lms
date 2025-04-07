@@ -51,10 +51,9 @@ export function formatFileSize(bytes: number): string {
 export function getApiUrl(): string {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   
-  // Debug what's happening with the API URL
+  // For debugging
   console.log('API URL from env:', apiUrl);
   
-  // Use fallback if not set
   if (!apiUrl) {
     console.warn('NEXT_PUBLIC_API_URL not set, using fallback URL');
     return 'http://localhost:3001';

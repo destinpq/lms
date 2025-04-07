@@ -9,6 +9,8 @@ const nextConfig = {
       },
     ];
   },
+  // Adding output: 'standalone' for improved build output
+  output: 'standalone',
 };
 
 module.exports = nextConfig; 

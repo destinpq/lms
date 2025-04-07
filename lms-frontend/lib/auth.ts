@@ -23,13 +23,17 @@ export interface AuthResponse {
   };
 }
 
+/**
+ * Get the API URL from environment variables
+ */
 export async function login(credentials: LoginCredentials): Promise<AuthResponse> {
   try {
     if (!credentials.email || !credentials.password) {
       throw new Error('Email and password are required');
     }
 
-    const response = await fetch(`${getApiUrl()}/auth/login`, {
+    const apiUrl = getApiUrl();
+    const response = await fetch(`${apiUrl}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

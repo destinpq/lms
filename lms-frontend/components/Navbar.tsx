@@ -32,57 +32,45 @@ export default function Navbar() {
   if (!currentUser) return null;
 
   return (
-    <nav className="bg-indigo-600 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="header nav-primary">
+      <div className="container mx-auto px-4">
         <div className="flex justify-between h-14">
           <div className="flex">
-            <div className="flex-shrink-0 flex items-center">
+            <div className="flex items-center">
               <Link href="/dashboard" className="text-white font-bold text-xl">
                 EduVantage LMS
               </Link>
             </div>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <div className="hidden sm-block sm-ml-6 space-x-4">
               <Link
                 href="/dashboard"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full
-                  ${isActive('/dashboard')
-                    ? 'border-white text-white'
-                    : 'border-transparent text-indigo-200 hover:text-white hover:border-indigo-300'
-                  }`}
+                className={`nav-link ${isActive('/dashboard') ? 'nav-link-active' : ''}`}
               >
                 Home
               </Link>
               <Link
                 href="/courses"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full
-                  ${isActive('/courses')
-                    ? 'border-white text-white'
-                    : 'border-transparent text-indigo-200 hover:text-white hover:border-indigo-300'
-                  }`}
+                className={`nav-link ${isActive('/courses') ? 'nav-link-active' : ''}`}
               >
                 Courses
               </Link>
               <Link
                 href="/profile"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full
-                  ${isActive('/profile')
-                    ? 'border-white text-white'
-                    : 'border-transparent text-indigo-200 hover:text-white hover:border-indigo-300'
-                  }`}
+                className={`nav-link ${isActive('/profile') ? 'nav-link-active' : ''}`}
               >
                 My Profile
               </Link>
             </div>
           </div>
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <div className="ml-3 relative flex items-center space-x-4">
+          <div className="hidden sm-block sm-ml-6 flex items-center">
+            <div className="ml-3 flex items-center space-x-4">
               <div className="text-sm text-white">
                 {currentUser?.firstName ? `${currentUser.firstName} ${currentUser.lastName}` : 'User'}
               </div>
               <button
                 onClick={handleLogout}
                 disabled={isLogoutLoading}
-                className="px-3 py-1.5 border border-white text-xs font-medium rounded-md text-white hover:bg-indigo-700 focus:outline-none"
+                className="btn-logout"
               >
                 {isLogoutLoading ? 'Signing out...' : 'Sign out'}
               </button>
@@ -90,16 +78,16 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="flex items-center sm:hidden">
+          <div className="flex items-center sm-hidden">
             <button
               type="button"
-              className="inline-flex items-center justify-center p-2 rounded-md text-indigo-200 hover:text-white hover:bg-indigo-700 focus:outline-none"
+              className="mobile-menu-btn"
               aria-controls="mobile-menu"
               aria-expanded="false"
             >
               <span className="sr-only">Open main menu</span>
               <svg
-                className="block h-6 w-6"
+                className="block h-6 w-5"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -119,42 +107,30 @@ export default function Navbar() {
       </div>
 
       {/* Mobile menu, show/hide based on menu state */}
-      <div className="sm:hidden" id="mobile-menu">
+      <div className="sm-hidden" id="mobile-menu">
         <div className="pt-2 pb-3 space-y-1">
           <Link
             href="/dashboard"
-            className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium
-              ${isActive('/dashboard')
-                ? 'bg-indigo-700 border-white text-white'
-                : 'border-transparent text-indigo-200 hover:bg-indigo-700 hover:border-indigo-300 hover:text-white'
-              }`}
+            className={`mobile-nav-link ${isActive('/dashboard') ? 'mobile-nav-link-active' : ''}`}
           >
             Home
           </Link>
           <Link
             href="/courses"
-            className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium
-              ${isActive('/courses')
-                ? 'bg-indigo-700 border-white text-white'
-                : 'border-transparent text-indigo-200 hover:bg-indigo-700 hover:border-indigo-300 hover:text-white'
-              }`}
+            className={`mobile-nav-link ${isActive('/courses') ? 'mobile-nav-link-active' : ''}`}
           >
             Courses
           </Link>
           <Link
             href="/profile"
-            className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium
-              ${isActive('/profile')
-                ? 'bg-indigo-700 border-white text-white'
-                : 'border-transparent text-indigo-200 hover:bg-indigo-700 hover:border-indigo-300 hover:text-white'
-              }`}
+            className={`mobile-nav-link ${isActive('/profile') ? 'mobile-nav-link-active' : ''}`}
           >
             My Profile
           </Link>
           <button
             onClick={handleLogout}
             disabled={isLogoutLoading}
-            className="w-full text-left block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-indigo-200 hover:bg-indigo-700 hover:border-indigo-300 hover:text-white"
+            className="mobile-nav-btn"
           >
             {isLogoutLoading ? 'Signing out...' : 'Sign out'}
           </button>

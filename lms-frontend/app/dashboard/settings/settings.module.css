@@ -1,0 +1,156 @@
+/* Settings Page Styles */
+.settingsHeader {
+  margin-bottom: 1.5rem;
+}
+
+.settingsTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.settingsSubtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.settingsCard {
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.settingsCardHeader {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.settingsCardTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.settingsCardBody {
+  padding: 1.5rem;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup:last-child {
+  margin-bottom: 0;
+}
+
+.formLabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.formInput {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: #111827;
+  background-color: white;
+}
+
+.formInput:focus {
+  outline: none;
+  ring: 2px;
+  ring-offset: 2px;
+  ring-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.formSelect {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: #111827;
+  background-color: white;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+}
+
+.formHelp {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.formCheckboxGroup {
+  display: flex;
+  align-items: center;
+}
+
+.formCheckbox {
+  width: 1rem;
+  height: 1rem;
+  color: #3b82f6;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  margin-right: 0.5rem;
+}
+
+.formButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.primaryButton {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+}
+
+.primaryButton:hover {
+  background-color: #2563eb;
+}
+
+.dangerButton {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+}
+
+.dangerButton:hover {
+  background-color: #dc2626;
+}
+
+.secondaryButton {
+  background-color: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.secondaryButton:hover {
+  background-color: #f9fafb;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+} 

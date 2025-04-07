@@ -1,0 +1,172 @@
+/* Course List Styling */
+.courseListItem {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  background-color: white;
+}
+
+.courseProgressTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.courseProgressContainer {
+  height: 0.25rem;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.courseProgressBar {
+  height: 100%;
+  background-color: #3b82f6;
+  border-radius: 9999px;
+}
+
+.courseTitle {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.courseInstructor {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.courseMeta {
+  font-size: 0.875rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.courseStudents {
+  margin-left: 0.5rem;
+  position: relative;
+  padding-left: 0.5rem;
+}
+
+.courseStudents:before {
+  content: "·";
+  position: absolute;
+  left: 0;
+}
+
+.courseAction {
+  margin-top: 0.5rem;
+}
+
+.continueButton {
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.continueButton:hover {
+  background-color: #2563eb;
+}
+
+/* Tabs */
+.pillTabs {
+  display: flex;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pillTab {
+  background: none;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+
+.pillTab:hover {
+  background-color: #f9fafb;
+}
+
+.active {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+/* Header */
+.coursesHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.coursesTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.coursesSubtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.coursesSearch {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.coursesSearch:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.filterButton {
+  display: flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.filterButton svg {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+} 

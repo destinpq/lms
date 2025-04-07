@@ -1,248 +1,195 @@
-import { 
-  AcademicCapIcon, 
-  DocumentTextIcon, 
-  CheckCircleIcon,
-  XCircleIcon
-} from "@heroicons/react/24/outline";
-import Link from "next/link";
+"use client";
+
+import { useState } from 'react';
+import Link from 'next/link';
+import styles from './assessments.module.css';
 
 export default function Assessments() {
-  // Mock data - in a real application, these would come from API calls
-  const assessments = [
+  const [activeTab, setActiveTab] = useState("all");
+  
+  // Mock data for assessments
+  const pendingSubmissions = [
     {
       id: 1,
-      title: "Python Basics Quiz",
+      title: "Basic Python Project",
       course: "Introduction to Python Programming",
-      courseId: 1,
-      type: "quiz",
-      timeLimit: 20,
-      questionsCount: 15,
-      dueDate: "Apr 10, 2024",
-      status: "completed",
-      score: 85,
-      passingScore: 70,
+      description: "Create a simple calculator application using Python",
+      dueDate: "Apr 18, 2024",
+      type: "Assignment"
     },
     {
       id: 2,
-      title: "Web Development Fundamentals Test",
-      course: "Web Development Fundamentals",
-      courseId: 2,
-      type: "quiz",
-      timeLimit: 45,
-      questionsCount: 30,
-      dueDate: "Apr 15, 2024",
-      status: "failed",
-      score: 65,
-      passingScore: 70,
-    },
-    {
-      id: 3,
-      title: "Basic Python Project",
-      course: "Introduction to Python Programming",
-      courseId: 1,
-      type: "assignment",
-      timeLimit: null,
-      dueDate: "Apr 18, 2024",
-      status: "pending",
-      description: "Create a simple calculator application using Python",
-    },
-    {
-      id: 4,
       title: "Data Visualization Exercise",
       course: "Data Science Basics",
-      courseId: 3,
-      type: "assignment",
-      timeLimit: null,
-      dueDate: "Apr 20, 2024",
-      status: "pending",
       description: "Create data visualizations using matplotlib and pandas",
-    },
+      dueDate: "Apr 20, 2024",
+      type: "Assignment"
+    }
+  ];
+  
+  const upcomingAssessments = [
     {
-      id: 5,
-      title: "Control Flow in Python Quiz",
+      id: 3,
+      title: "Control Flow in Python",
       course: "Introduction to Python Programming",
-      courseId: 1,
-      type: "quiz",
-      timeLimit: 15,
-      questionsCount: 10,
+      description: "Quiz on control flow statements in Python",
       dueDate: "Apr 12, 2024",
-      status: "upcoming",
-    },
+      duration: "15 min",
+      questions: 10,
+      type: "Quiz"
+    }
+  ];
+  
+  const pastAssessments = [
+    {
+      id: 4,
+      title: "Python Basics",
+      course: "Introduction to Python Programming",
+      type: "Quiz",
+      score: 85,
+      passing: 70,
+      passed: true
+    }
   ];
 
-  // Group by status
-  const pendingAssessments = assessments.filter(a => a.status === "pending");
-  const upcomingAssessments = assessments.filter(a => a.status === "upcoming");
-  const completedAssessments = assessments.filter(a => ["completed", "failed"].includes(a.status));
-
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900">Assessments</h1>
-      <p className="mt-1 text-gray-600">Track your quizzes, tests, and assignments</p>
-
-      {/* Assessment Tabs */}
-      <div className="mt-6 border-b border-gray-200">
-        <nav className="-mb-px flex space-x-8">
-          <button className="border-blue-500 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-            All Assessments
-          </button>
-          <button className="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-            Quizzes
-          </button>
-          <button className="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-            Assignments
-          </button>
-        </nav>
+    <div className="code-learning-container">
+      <div className={styles.assessmentsHeader}>
+        <h1 className={styles.assessmentsTitle}>Assessments</h1>
+        <p className={styles.assessmentsSubtitle}>Track your quizzes, tests, and assignments</p>
       </div>
-
-      {/* Pending Assessments */}
-      {pendingAssessments.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-lg font-medium text-gray-900">Pending Submissions</h2>
-          <div className="mt-4 space-y-4">
-            {pendingAssessments.map((assessment) => (
-              <div key={assessment.id} className="bg-white shadow overflow-hidden rounded-lg">
-                <div className="p-5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <DocumentTextIcon className="h-8 w-8 text-blue-500" />
-                      <div className="ml-4">
-                        <h3 className="text-lg font-medium text-gray-900">{assessment.title}</h3>
-                        <p className="text-sm text-gray-500">{assessment.course}</p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <span className="text-sm font-medium text-red-600">Due: {assessment.dueDate}</span>
-                      <span className="text-xs text-gray-500 mt-1">Assignment</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4">
-                    <p className="text-sm text-gray-700">{assessment.description}</p>
-                  </div>
-                  
-                  <div className="mt-6 flex justify-end">
-                    <Link
-                      href={`/dashboard/assessments/${assessment.id}`}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-                    >
-                      Start Assignment
-                    </Link>
-                  </div>
+      
+      {/* Tabs */}
+      <div className={styles.tabsContainer}>
+        <button 
+          className={`${styles.tab} ${activeTab === "all" ? styles.activeTab : ""}`}
+          onClick={() => setActiveTab("all")}
+        >
+          All Assessments
+        </button>
+        <button 
+          className={`${styles.tab} ${activeTab === "quizzes" ? styles.activeTab : ""}`}
+          onClick={() => setActiveTab("quizzes")}
+        >
+          Quizzes
+        </button>
+        <button 
+          className={`${styles.tab} ${activeTab === "assignments" ? styles.activeTab : ""}`}
+          onClick={() => setActiveTab("assignments")}
+        >
+          Assignments
+        </button>
+      </div>
+      
+      {/* Pending Submissions */}
+      {pendingSubmissions.length > 0 && (
+        <section>
+          <h2 className={styles.sectionTitle}>Pending Submissions</h2>
+          
+          {pendingSubmissions.map(assessment => (
+            <div key={assessment.id} className={styles.assessmentItem}>
+              <div className={styles.assessmentIconContainer}>
+                <svg className={styles.assessmentIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10 9 9 9 8 9" />
+                </svg>
+              </div>
+              
+              <div className={styles.assessmentContent}>
+                <h3 className={styles.assessmentTitle}>{assessment.title}</h3>
+                <p className={styles.assessmentCourse}>{assessment.course}</p>
+                <p className={styles.assessmentDescription}>{assessment.description}</p>
+              </div>
+              
+              <div className={styles.assessmentMeta}>
+                <div className={styles.assessmentDueDate}>Due: {assessment.dueDate}</div>
+                <div className={styles.assessmentType}>{assessment.type}</div>
+                <div className={styles.assessmentAction}>
+                  <Link href={`/dashboard/assessments/${assessment.id}`} className={styles.startButton}>
+                    Start Assignment
+                  </Link>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          ))}
+        </section>
       )}
-
+      
       {/* Upcoming Assessments */}
       {upcomingAssessments.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-lg font-medium text-gray-900">Upcoming Assessments</h2>
-          <div className="mt-4 space-y-4">
-            {upcomingAssessments.map((assessment) => (
-              <div key={assessment.id} className="bg-white shadow overflow-hidden rounded-lg">
-                <div className="p-5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <AcademicCapIcon className="h-8 w-8 text-indigo-500" />
-                      <div className="ml-4">
-                        <h3 className="text-lg font-medium text-gray-900">{assessment.title}</h3>
-                        <p className="text-sm text-gray-500">{assessment.course}</p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <span className="text-sm font-medium text-red-600">Due: {assessment.dueDate}</span>
-                      <span className="text-xs text-gray-500 mt-1">Quiz • {assessment.timeLimit} min • {assessment.questionsCount} questions</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6 flex justify-end">
-                    <Link
-                      href={`/dashboard/courses/${assessment.courseId}`}
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 mr-3"
-                    >
-                      View Course
-                    </Link>
-                    <Link
-                      href={`/dashboard/assessments/${assessment.id}`}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-                    >
-                      Start Quiz
-                    </Link>
-                  </div>
+        <section>
+          <h2 className={styles.sectionTitle}>Upcoming Assessments</h2>
+          
+          {upcomingAssessments.map(assessment => (
+            <div key={assessment.id} className={styles.assessmentItem}>
+              <div className={styles.assessmentIconContainer}>
+                <svg className={styles.assessmentIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="2" ry="2" />
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M12 5V9" />
+                  <path d="M12 15v4" />
+                  <path d="M5 12H9" />
+                  <path d="M15 12h4" />
+                </svg>
+              </div>
+              
+              <div className={styles.assessmentContent}>
+                <h3 className={styles.assessmentTitle}>{assessment.title}</h3>
+                <p className={styles.assessmentCourse}>{assessment.course}</p>
+                <p className={styles.assessmentDescription}>{assessment.description}</p>
+              </div>
+              
+              <div className={styles.assessmentMeta}>
+                <div className={styles.assessmentDueDate}>Due: {assessment.dueDate}</div>
+                <div className={styles.assessmentType}>{assessment.type} · {assessment.duration} · {assessment.questions} questions</div>
+                <div className={styles.assessmentAction}>
+                  <Link href={`/dashboard/courses/${assessment.id}`} className={styles.viewButton}>
+                    View Course
+                  </Link>
+                  <Link href={`/dashboard/assessments/${assessment.id}`} className={styles.startButton}>
+                    Start Quiz
+                  </Link>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          ))}
+        </section>
       )}
-
-      {/* Completed Assessments */}
-      {completedAssessments.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-lg font-medium text-gray-900">Past Assessments</h2>
-          <div className="mt-4 space-y-4">
-            {completedAssessments.map((assessment) => (
-              <div key={assessment.id} className="bg-white shadow overflow-hidden rounded-lg">
-                <div className="p-5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      {assessment.type === "quiz" ? (
-                        <AcademicCapIcon className={`h-8 w-8 ${assessment.status === "completed" ? "text-green-500" : "text-red-500"}`} />
-                      ) : (
-                        <DocumentTextIcon className="h-8 w-8 text-green-500" />
-                      )}
-                      <div className="ml-4">
-                        <h3 className="text-lg font-medium text-gray-900">{assessment.title}</h3>
-                        <p className="text-sm text-gray-500">{assessment.course}</p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      {assessment.status === "completed" ? (
-                        <div className="flex items-center text-green-600">
-                          <CheckCircleIcon className="h-5 w-5 mr-1" />
-                          <span className="text-sm font-medium">Passed</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center text-red-600">
-                          <XCircleIcon className="h-5 w-5 mr-1" />
-                          <span className="text-sm font-medium">Failed</span>
-                        </div>
-                      )}
-                      {assessment.type === "quiz" && (
-                        <span className="text-xs text-gray-500 mt-1">
-                          Score: {assessment.score}% (Passing: {assessment.passingScore}%)
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4">
-                    {assessment.type === "quiz" && (
-                      <div className="w-full bg-gray-200 rounded-full h-2.5">
-                        <div 
-                          className={`h-2.5 rounded-full ${assessment.status === "completed" ? "bg-green-600" : "bg-red-600"}`} 
-                          style={{ width: `${assessment.score}%` }}
-                        ></div>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="mt-6 flex justify-end">
-                    <Link
-                      href={`/dashboard/assessments/${assessment.id}/results`}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
-                    >
-                      View Results
-                    </Link>
-                  </div>
-                </div>
+      
+      {/* Past Assessments */}
+      {pastAssessments.length > 0 && (
+        <section>
+          <h2 className={styles.sectionTitle}>Past Assessments</h2>
+          
+          {pastAssessments.map(assessment => (
+            <div key={assessment.id} className={styles.assessmentItem}>
+              <div className={styles.assessmentIconContainer}>
+                <svg className={styles.assessmentIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="2" ry="2" />
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M12 5V9" />
+                  <path d="M12 15v4" />
+                  <path d="M5 12H9" />
+                  <path d="M15 12h4" />
+                </svg>
               </div>
-            ))}
-          </div>
-        </div>
+              
+              <div className={styles.assessmentContent}>
+                <h3 className={styles.assessmentTitle}>{assessment.title}</h3>
+                <p className={styles.assessmentCourse}>{assessment.course}</p>
+              </div>
+              
+              <div className={styles.assessmentMeta}>
+                {assessment.passed && <div className={styles.passedBadge}>Passed</div>}
+                <div className={styles.assessmentScore}>Score: {assessment.score}% (Passing: {assessment.passing}%)</div>
+                <div className={styles.assessmentType}>{assessment.type}</div>
+              </div>
+            </div>
+          ))}
+        </section>
       )}
     </div>
   );
