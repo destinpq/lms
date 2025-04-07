@@ -2,17 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { SeedService } from './seed/seed.service';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
-
-  // Enable CORS with specific origin
-  app.enableCors({
-    origin: true, // Allow any origin for development
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    credentials: true,
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
   });
 
   // Enable validation pipes
@@ -26,10 +21,15 @@ async function bootstrap() {
 
   // Get port from config
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT', 3001);
+  const port = configService.get<number>('PORT') || 3001;
+
+  // Run Seeder
+  const seedService = app.get(SeedService);
+  await seedService.runSeed();
 
   await app.listen(port);
   logger.log(`Application is running on: http://localhost:${port}`);
+  logger.log(`API Documentation available at http://localhost:${port}/api`, 'Bootstrap');
 }
 
 void bootstrap();

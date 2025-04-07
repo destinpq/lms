@@ -38,10 +38,10 @@ export default function Navbar() {
           <div className="flex">
             <div className="flex items-center">
               <Link href="/dashboard" className="text-white font-bold text-xl">
-                EduVantage LMS
+                LMS Platform
               </Link>
             </div>
-            <div className="hidden sm-block sm-ml-6 space-x-4">
+            <div className="hidden sm:flex sm:ml-6 space-x-4">
               <Link
                 href="/dashboard"
                 className={`nav-link ${isActive('/dashboard') ? 'nav-link-active' : ''}`}
@@ -62,10 +62,40 @@ export default function Navbar() {
               </Link>
             </div>
           </div>
-          <div className="hidden sm-block sm-ml-6 flex items-center">
+          <div className="hidden sm:flex sm:ml-6 items-center">
             <div className="ml-3 flex items-center space-x-4">
-              <div className="text-sm text-white">
-                {currentUser?.firstName ? `${currentUser.firstName} ${currentUser.lastName}` : 'User'}
+              <div className="notification-button-container">
+                <span className="notification-label">View notifications</span>
+                <button className="lms-notification-btn">
+                  <span className="sr-only">View notifications</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  </svg>
+                </button>
+              </div>
+              <div className="notification-button-container">
+                <span className="notification-label">View messages</span>
+                <button className="lms-notification-btn">
+                  <span className="sr-only">View messages</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </button>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="user-avatar">
+                  {currentUser?.firstName ? currentUser.firstName[0] : currentUser?.email?.[0] || 'U'}
+                </div>
+                <div className="user-info">
+                  <div className="user-name">
+                    {currentUser ? `${currentUser.firstName || ''} ${currentUser.lastName || ''}` : 'User'}
+                  </div>
+                  <div className="user-email">
+                    {currentUser?.email || ''}
+                  </div>
+                </div>
               </div>
               <button
                 onClick={handleLogout}
@@ -78,7 +108,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="flex items-center sm-hidden">
+          <div className="flex items-center sm:hidden">
             <button
               type="button"
               className="mobile-menu-btn"
@@ -107,7 +137,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile menu, show/hide based on menu state */}
-      <div className="sm-hidden" id="mobile-menu">
+      <div className="sm:hidden" id="mobile-menu">
         <div className="pt-2 pb-3 space-y-1">
           <Link
             href="/dashboard"

@@ -13,6 +13,12 @@ import { FilesModule } from './files/files.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { GamificationModule } from './gamification/gamification.module';
 import { IntegrationModule } from './integration/integration.module';
+import { LanguagesModule } from './languages/languages.module';
+import { TopicsModule } from './topics/topics.module';
+import { SeedModule } from './seed/seed.module';
+import { QuestionsModule } from './questions/questions.module';
+import { SubmissionsModule } from './submissions/submissions.module';
+import { RatingsModule } from './ratings/ratings.module';
 
 @Module({
   imports: [
@@ -48,6 +54,12 @@ import { IntegrationModule } from './integration/integration.module';
     AnalyticsModule,
     GamificationModule,
     IntegrationModule,
+    LanguagesModule,
+    TopicsModule,
+    SeedModule,
+    QuestionsModule,
+    SubmissionsModule,
+    RatingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

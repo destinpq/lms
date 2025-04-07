@@ -1,9 +1,11 @@
-import { Module } from '@nestjs/common';
-import { IntegrationController } from './integration.controller';
-import { IntegrationService } from './integration.service';
+import { Module, Global } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { OpenaiService } from './openai.service';
 
+@Global()
 @Module({
-  controllers: [IntegrationController],
-  providers: [IntegrationService],
+  imports: [ConfigModule],
+  providers: [OpenaiService],
+  exports: [OpenaiService],
 })
 export class IntegrationModule {}

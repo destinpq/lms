@@ -65,12 +65,12 @@ export default function DashboardLayout({
     <div className="dashboard-layout">
       {/* Sidebar */}
       <div className="dashboard-sidebar visible">
-        <div className="flex flex-col flex-grow pt-5 bg-white border-r border-gray-200 shadow-sm h-full">
+        <div className="flex flex-col flex-grow pt-5 pb-5">
           <div className="flex items-center flex-shrink-0 px-4 mb-5">
             <Link href="/dashboard" className="text-xl font-bold text-blue-600">LMS Platform</Link>
           </div>
           <div className="flex flex-col flex-grow px-4">
-            <nav className="flex-1 space-y-2">
+            <nav className="flex-1 space-y-1">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -111,7 +111,7 @@ export default function DashboardLayout({
             <div className="flex items-center space-x-4">
               <div className="notification-button-container">
                 <span className="notification-label">View notifications</span>
-                <button className="lms-notification-btn">
+                <button className="lms-notification-btn text-gray-600">
                   <span className="sr-only">View notifications</span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -121,7 +121,7 @@ export default function DashboardLayout({
               </div>
               <div className="notification-button-container">
                 <span className="notification-label">View messages</span>
-                <button className="lms-notification-btn">
+                <button className="lms-notification-btn text-gray-600">
                   <span className="sr-only">View messages</span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
@@ -132,15 +132,15 @@ export default function DashboardLayout({
               <div className="relative">
                 <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
-                    <div className="user-avatar">
+                    <div className="user-avatar bg-blue-600">
                       {user?.firstName ? user.firstName[0] : user?.email?.[0] || 'U'}
                     </div>
                   </div>
-                  <div className="user-info">
-                    <div className="user-name">
-                      {user ? `${user.firstName} ${user.lastName}` : 'User'}
+                  <div className="user-info text-gray-700">
+                    <div className="user-name text-gray-800">
+                      {user ? `${user.firstName || ''} ${user.lastName || ''}` : 'User'}
                     </div>
-                    <div className="user-email">
+                    <div className="user-email text-gray-500">
                       {user?.email || ''}
                     </div>
                   </div>
@@ -151,7 +151,7 @@ export default function DashboardLayout({
         </header>
 
         {/* Main content */}
-        <main className="flex-1 overflow-auto bg-gray-100">
+        <main className="flex-1 overflow-auto bg-gray-50">
           <div className="py-6">
             <div className="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
               {children}

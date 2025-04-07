@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import styles from './analytics.module.css';
 
 export default function Analytics() {
@@ -33,6 +34,31 @@ export default function Analytics() {
       change: '-3%',
       isPositive: false
     }
+  ];
+
+  // Mock data for charts
+  const progressData = [
+    { name: 'Jan', progress: 30 },
+    { name: 'Feb', progress: 45 },
+    { name: 'Mar', progress: 50 },
+    { name: 'Apr', progress: 60 },
+    { name: 'May', progress: 65 },
+    { name: 'Jun', progress: 68 },
+  ];
+
+  const timeSpentData = [
+    { name: 'Python', time: 12 },
+    { name: 'Web Dev', time: 8 },
+    { name: 'Data Sci', time: 15 },
+    { name: 'UI/UX', time: 5 },
+  ];
+  
+  const assessmentData = [
+    { name: 'Quiz 1', score: 75 },
+    { name: 'Quiz 2', score: 88 },
+    { name: 'Midterm', score: 70 },
+    { name: 'Quiz 3', score: 92 },
+    { name: 'Final', score: 85 },
   ];
 
   const courses = [
@@ -121,33 +147,51 @@ export default function Analytics() {
           <h2 className={styles.chartCardTitle}>Progress Over Time</h2>
         </div>
         <div className={styles.chartCardBody}>
-          <div className={styles.placeholderChart}>
-            Progress chart visualization would appear here
-          </div>
+          <ResponsiveContainer width="100%" height={200}>
+            <LineChart data={progressData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="name" fontSize={12} stroke="#6b7280" />
+              <YAxis fontSize={12} stroke="#6b7280" />
+              <Tooltip />
+              <Line type="monotone" dataKey="progress" stroke="#3b82f6" strokeWidth={2} activeDot={{ r: 6 }} />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
       
       {/* Time Spent Per Course Chart */}
       <div className={styles.chartCard}>
         <div className={styles.chartCardHeader}>
-          <h2 className={styles.chartCardTitle}>Time Spent Per Course</h2>
+          <h2 className={styles.chartCardTitle}>Time Spent Per Course (hours)</h2>
         </div>
         <div className={styles.chartCardBody}>
-          <div className={styles.placeholderChart}>
-            Time distribution chart would appear here
-          </div>
+           <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={timeSpentData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="name" fontSize={12} stroke="#6b7280" />
+              <YAxis fontSize={12} stroke="#6b7280" />
+              <Tooltip />
+              <Bar dataKey="time" fill="#8884d8" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
       
       {/* Assessment Performance Chart */}
       <div className={styles.chartCard}>
         <div className={styles.chartCardHeader}>
-          <h2 className={styles.chartCardTitle}>Assessment Performance</h2>
+          <h2 className={styles.chartCardTitle}>Assessment Performance (%)</h2>
         </div>
         <div className={styles.chartCardBody}>
-          <div className={styles.placeholderChart}>
-            Assessment scores chart would appear here
-          </div>
+          <ResponsiveContainer width="100%" height={200}>
+            <LineChart data={assessmentData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="name" fontSize={12} stroke="#6b7280" />
+              <YAxis fontSize={12} stroke="#6b7280" />
+              <Tooltip />
+              <Line type="monotone" dataKey="score" stroke="#10b981" strokeWidth={2} activeDot={{ r: 6 }}/>
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>
