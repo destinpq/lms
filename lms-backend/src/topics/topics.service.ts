@@ -39,4 +39,9 @@ export class TopicsService {
   ): Promise<Topic | null> {
     return this.topicsRepository.findOne({ where: { name, languageId } });
   }
+
+  // Method to find a topic by ID
+  async findOne(id: string): Promise<Topic | null> {
+    return this.topicsRepository.findOne({ where: { id } });
+  }
 } 

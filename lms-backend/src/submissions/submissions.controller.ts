@@ -34,18 +34,25 @@ export class SubmissionsController {
   @Post()
   // @UseGuards(JwtAuthGuard) // Uncomment once auth is set up
   async create(
-    @Body() submissionData: { userId: string; questionId: string; code: string; languageSlug: string },
+    @Body() submissionData: { 
+      userId: string; 
+      questionId: string; 
+      code: string; 
+      languageSlug: string;
+      questionData?: Partial<any>; // Add questionData field to save generated questions
+    },
     // @Req() request: Request, // Uncomment once auth is set up
   ): Promise<Submission> {
     // Uncomment this and remove userId from submissionData once auth is set up
     // const userId = request.user.id;
-    const { userId, questionId, code, languageSlug } = submissionData;
+    const { userId, questionId, code, languageSlug, questionData } = submissionData;
     
     return this.submissionsService.createSubmission(
       userId,
       questionId,
       code,
       languageSlug,
+      questionData, // Pass the questionData to save it if it's a generated question
     );
   }
 } 

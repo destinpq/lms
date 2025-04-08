@@ -6,6 +6,9 @@ import { OpenaiService } from '../integration/openai.service';
 import { mockTopics } from './mock-topics';
 import { QuestionsService } from '../questions/questions.service';
 import { DifficultyLevel } from '../questions/entities/question.entity';
+import { CoursesService } from '../courses/courses.service';
+import { UsersService } from '../users/users.service';
+import { UserRole } from '../users/entities/user.entity';
 
 interface TopicData {
   name: string;
@@ -57,6 +60,81 @@ const mockQuestionTemplates = {
   }
 };
 
+// Mock courses for each programming language
+const mockCourses = {
+  python: [
+    {
+      title: 'Introduction to Python Programming',
+      description: 'A comprehensive course covering the fundamentals of Python programming language. Learn syntax, data types, control structures, functions, and more.',
+      duration: '8 weeks',
+      level: 'Beginner',
+      tags: ['Python', 'Programming', 'Beginner']
+    },
+    {
+      title: 'Advanced Python Techniques',
+      description: 'Take your Python skills to the next level with advanced concepts including decorators, generators, context managers, and metaprogramming.',
+      duration: '6 weeks',
+      level: 'Advanced',
+      tags: ['Python', 'Advanced', 'Programming']
+    },
+    {
+      title: 'Python for Data Science',
+      description: 'Learn how to use Python for data analysis, visualization, and machine learning. Covers NumPy, Pandas, Matplotlib, and scikit-learn.',
+      duration: '10 weeks',
+      level: 'Intermediate',
+      tags: ['Python', 'Data Science', 'Machine Learning']
+    }
+  ],
+  java: [
+    {
+      title: 'Java Programming Essentials',
+      description: 'Master the fundamentals of Java programming including object-oriented principles, data structures, exception handling, and more.',
+      duration: '12 weeks',
+      level: 'Beginner',
+      tags: ['Java', 'Programming', 'Beginner']
+    },
+    {
+      title: 'Java Enterprise Development',
+      description: 'Learn to build enterprise applications with Java EE. Covers Servlets, JSP, JPA, Spring Framework, and Microservices architecture.',
+      duration: '14 weeks',
+      level: 'Advanced',
+      tags: ['Java', 'Enterprise', 'Spring']
+    }
+  ],
+  javascript: [
+    {
+      title: 'JavaScript Fundamentals',
+      description: 'Build a strong foundation in JavaScript programming. Learn syntax, functions, objects, DOM manipulation, and asynchronous programming.',
+      duration: '6 weeks',
+      level: 'Beginner',
+      tags: ['JavaScript', 'Web Development', 'Beginner']
+    },
+    {
+      title: 'Modern JavaScript Frameworks',
+      description: 'Master popular JavaScript frameworks like React, Vue, and Angular. Build interactive web applications with modern tooling.',
+      duration: '8 weeks',
+      level: 'Intermediate',
+      tags: ['JavaScript', 'Frameworks', 'React', 'Vue', 'Angular']
+    }
+  ],
+  cpp: [
+    {
+      title: 'C++ Programming Basics',
+      description: 'Learn the fundamentals of C++ programming including syntax, data types, control structures, functions, and object-oriented programming.',
+      duration: '10 weeks',
+      level: 'Beginner',
+      tags: ['C++', 'Programming', 'Beginner']
+    },
+    {
+      title: 'Advanced C++ and System Programming',
+      description: 'Dive into advanced C++ features and system-level programming. Covers templates, STL, memory management, multithreading, and performance optimization.',
+      duration: '12 weeks',
+      level: 'Advanced',
+      tags: ['C++', 'System Programming', 'Advanced']
+    }
+  ]
+};
+
 @Injectable()
 export class SeedService {
   constructor(
@@ -64,6 +142,8 @@ export class SeedService {
     private readonly languagesService: LanguagesService,
     private readonly topicsService: TopicsService,
     private readonly questionsService: QuestionsService,
+    private readonly coursesService: CoursesService,
+    private readonly usersService: UsersService,
     private readonly openaiService: OpenaiService,
     private readonly logger: Logger,
   ) {}
@@ -81,7 +161,14 @@ export class SeedService {
     try {
       await this.seedLanguages();
       await this.seedTopics();
-      await this.seedQuestions();
+      // Skip question seeding - we'll generate questions on demand when students attempt them
+      // await this.seedQuestions();
+      
+      // Check if course seeding is enabled
+      const shouldSeedCourses = this.configService.get<string>('SEED_COURSES') === 'true';
+      if (shouldSeedCourses) {
+        await this.seedCourses();
+      }
 
       this.logger.log('Database seeding completed successfully.', 'SeedService');
     } catch (error) {
@@ -250,8 +337,6 @@ export class SeedService {
               testCases: template.testCases,
               timeLimit: template.timeLimit,
               pointsValue: template.pointsValue,
-              hints: [`Think about ${topic.name.toLowerCase()} concepts in ${language.name}.`],
-              topicId: topic.id,
             };
           } else {
             // Generate a question using OpenAI
@@ -263,17 +348,22 @@ export class SeedService {
             );
           }
 
-          // Create the question in the database
-          await this.questionsService.create(questionData);
-          totalQuestionsCreated++;
-
-          this.logger.log(
-            `Created ${difficulty} question for topic "${topic.name}" (${language.name}).`,
-            'SeedService',
-          );
+          // Create the question
+          if (questionData) {
+            await this.questionsService.create({
+              title: questionData.title,
+              description: questionData.description,
+              difficulty: questionData.difficulty,
+              testCases: questionData.testCases,
+              timeLimit: questionData.timeLimit,
+              pointsValue: questionData.pointsValue,
+              topicId: topic.id,
+            });
+            totalQuestionsCreated++;
+          }
         } catch (error) {
           this.logger.error(
-            `Error creating ${difficulty} question for topic "${topic.name}":`,
+            `Error creating ${difficulty} question for topic "${topic.name}"`,
             error instanceof Error ? error.stack : error,
             'SeedService',
           );
@@ -281,11 +371,10 @@ export class SeedService {
       }
     }
 
-    this.logger.log(`Total questions created: ${totalQuestionsCreated}`, 'SeedService');
+    this.logger.log(`Created ${totalQuestionsCreated} questions total.`, 'SeedService');
     this.logger.log('Questions seeding finished.', 'SeedService');
   }
 
-  // Helper method to generate a question using OpenAI
   private async generateQuestionWithOpenAI(
     topicName: string,
     languageName: string,
@@ -293,56 +382,90 @@ export class SeedService {
     topicId: string,
   ): Promise<any> {
     try {
-      // Call OpenAI to generate a question
-      const prompt = `
-        Create a coding question about ${topicName} in ${languageName} with ${difficulty} difficulty level.
-        
-        Return a JSON object with these fields:
-        - title: A concise title for the question
-        - description: Detailed problem description including example use cases
-        - testCases: Array of objects with "input" and "expectedOutput" properties (3-5 test cases)
-        - solution: An example correct solution in ${languageName}
-        - hints: Array of strings with progressive hints (2-3 hints)
-        - timeLimit: Suggested time limit in seconds (easy: 120-240, medium: 300-480, hard: 600-900)
-        - pointsValue: Points worth (easy: 10, medium: 20, hard: 30)
-      `;
-
-      const completion = await this.openaiService.createCompletion(prompt);
-      
-      if (!completion) {
-        throw new Error('OpenAI returned empty completion');
-      }
-
-      // Parse the response
-      const responseJson = JSON.parse(completion);
-      
-      // Add the topicId to the response
-      return {
-        ...responseJson,
-        difficulty,
-        topicId,
-      };
+      // Use OpenAI to generate question data
+      return await this.openaiService.generateQuestion(topicName, languageName, difficulty);
     } catch (error) {
       this.logger.error(
-        `Error generating question with OpenAI for ${topicName} (${difficulty}):`,
+        `Error generating question with OpenAI for "${topicName}" (${languageName})`,
         error instanceof Error ? error.stack : error,
         'SeedService',
       );
+      return null;
+    }
+  }
+
+  private async seedCourses(): Promise<void> {
+    this.logger.log('Seeding courses...', 'SeedService');
+
+    try {
+      // Find or create admin user for course creation
+      let adminUser = await this.usersService.findByEmail('admin@example.com');
+
+      if (!adminUser) {
+        adminUser = await this.usersService.create({
+          email: 'admin@example.com',
+          password: 'admin123',
+          firstName: 'Admin',
+          lastName: 'User',
+          role: UserRole.ADMIN,
+        });
+        this.logger.log('Created admin user for course creation', 'SeedService');
+      }
+
+      // Get all languages
+      const languages = await this.languagesService.findAll();
       
-      // Fall back to mock data on error
-      const template = mockQuestionTemplates[difficulty];
-      return {
-        title: template.title.replace('{{topic}}', topicName),
-        description: template.description
-          .replace('{{topic}}', topicName.toLowerCase())
-          .replace('{{language}}', languageName),
-        difficulty,
-        testCases: template.testCases,
-        timeLimit: template.timeLimit,
-        pointsValue: template.pointsValue,
-        hints: [`Think about ${topicName.toLowerCase()} concepts in ${languageName}.`],
-        topicId,
-      };
+      for (const language of languages) {
+        // Get mock courses for this language
+        const slugToKey = {
+          python: 'python',
+          java: 'java',
+          javascript: 'javascript',
+          cpp: 'cpp',
+        };
+        
+        const key = slugToKey[language.slug] || 'python';
+        const languageCourses = mockCourses[key] || [];
+        
+        // Create courses for this language
+        let coursesCreated = 0;
+        for (const courseData of languageCourses) {
+          // Check if course already exists
+          const existingCourses = await this.coursesService.findAll();
+          const exists = existingCourses.some(c => c.title === courseData.title);
+          
+          if (!exists) {
+            await this.coursesService.create(
+              {
+                title: courseData.title,
+                description: courseData.description,
+                duration: courseData.duration,
+                tags: courseData.tags,
+                isPublished: true,
+                hasCertificate: true,
+                settings: {
+                  level: courseData.level,
+                  languages: [language.name],
+                }
+              },
+              adminUser.id
+            );
+            coursesCreated++;
+          } else {
+            this.logger.log(`Course "${courseData.title}" already exists. Skipping.`, 'SeedService');
+          }
+        }
+        
+        this.logger.log(`Created ${coursesCreated} courses for ${language.name}`, 'SeedService');
+      }
+      
+      this.logger.log('Courses seeding finished.', 'SeedService');
+    } catch (error) {
+      this.logger.error(
+        'Error seeding courses',
+        error instanceof Error ? error.stack : error,
+        'SeedService',
+      );
     }
   }
 } 

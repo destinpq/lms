@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Submission, SubmissionStatus } from './entities/submission.entity';
 import { QuestionsService } from '../questions/questions.service';
 import { OpenaiService } from '../integration/openai.service';
+import { Question } from '../questions/entities/question.entity';
 
 @Injectable()
 export class SubmissionsService {
@@ -58,11 +59,35 @@ export class SubmissionsService {
     questionId: string,
     code: string,
     languageSlug: string,
+    questionData?: Partial<Question>,
   ): Promise<Submission> {
+    let finalQuestionId = questionId;
+    
+    // If we have questionData and it doesn't have an ID, save it first
+    if (questionData && !questionData.id) {
+      this.logger.log(`Saving dynamically generated question before submission`);
+      try {
+        const savedQuestion = await this.questionsService.create({
+          title: questionData.title,
+          description: questionData.description,
+          difficulty: questionData.difficulty,
+          testCases: questionData.testCases,
+          timeLimit: questionData.timeLimit,
+          pointsValue: questionData.pointsValue,
+          topicId: questionData.topicId,
+        });
+        finalQuestionId = savedQuestion.id;
+        this.logger.log(`Generated question saved with ID: ${finalQuestionId}`);
+      } catch (error) {
+        this.logger.error(`Failed to save generated question: ${error.message}`, error.stack);
+        // Continue with the original questionId as fallback
+      }
+    }
+
     // Create a new submission record
     const submission = this.submissionsRepository.create({
       userId,
-      questionId,
+      questionId: finalQuestionId,
       code,
       languageSlug,
       status: SubmissionStatus.PENDING,

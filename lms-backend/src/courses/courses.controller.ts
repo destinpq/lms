@@ -43,7 +43,6 @@ export class CoursesController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.coursesService.findAll();
   }

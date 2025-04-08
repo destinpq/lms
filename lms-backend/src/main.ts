@@ -21,7 +21,10 @@ async function bootstrap() {
 
   // Get port from config
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT') || 3001;
+  const envPort = process.env.PORT;
+  logger.log(`Environment PORT variable: ${envPort}`);
+  const port = configService.get<number>('PORT') || 4441;
+  logger.log(`Using port: ${port}`);
 
   // Run Seeder
   const seedService = app.get(SeedService);

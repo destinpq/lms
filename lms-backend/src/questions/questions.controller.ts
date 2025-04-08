@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, Delete, Put, NotFoundException } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { Question, DifficultyLevel } from './entities/question.entity';
 
@@ -46,15 +46,47 @@ export class QuestionsController {
     return this.questionsService.remove(id);
   }
 
-  @Get('topic/:topicId/random')
-  async getRandomQuestion(
+  @Get('topic/:topicId/get-or-generate')
+  async getOrGenerateQuestion(
     @Param('topicId') topicId: string,
     @Query('difficulty') difficulty: DifficultyLevel = DifficultyLevel.MEDIUM,
-  ): Promise<Question> {
-    const question = await this.questionsService.getRandomQuestion(topicId, difficulty);
+  ): Promise<Question | Partial<Question>> {
+    const question = await this.questionsService.getOrCreateQuestion(topicId, difficulty);
     
     if (!question) {
-      throw new Error(`No questions found for topic ${topicId} with difficulty ${difficulty}`);
+      throw new NotFoundException(`Could not find or generate question for topic ${topicId} with difficulty ${difficulty}`);
+    }
+    
+    return question;
+  }
+
+  @Get('user/:userId/topic/:topicId')
+  async getQuestionForUser(
+    @Param('userId') userId: string,
+    @Param('topicId') topicId: string,
+  ): Promise<Question | Partial<Question>> {
+    const question = await this.questionsService.getQuestionForUser(userId, topicId);
+    
+    if (!question) {
+      throw new NotFoundException(`Could not find or generate question for user ${userId}, topic ${topicId}`);
+    }
+    
+    return question;
+  }
+
+  @Get('generate')
+  async generateQuestionOnDemand(
+    @Query('topicId') topicId: string,
+    @Query('difficulty') difficulty: DifficultyLevel = DifficultyLevel.MEDIUM,
+  ): Promise<Partial<Question>> {
+    if (!topicId) {
+      throw new NotFoundException('topicId is required');
+    }
+    
+    const question = await this.questionsService.generateQuestionOnDemand(topicId, difficulty);
+    
+    if (!question) {
+      throw new NotFoundException(`Could not generate question for topic ${topicId} with difficulty ${difficulty}`);
     }
     
     return question;
